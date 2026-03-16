@@ -29,13 +29,23 @@ async function build() {
     await rm('../server', { recursive: true, force: true })
 
     try {
-        await Bun.build({
+        const result = await Bun.build({
             entrypoints: entrypoints,
             outdir: '../server',
             format: 'cjs',
-            target: 'node'
-            // minify: true
+            target: 'node',
+            minify: { whitespace: true, syntax: true }
         })
+
+        for (const output of result.outputs) {
+            let content = await Bun.file(output.path).text()
+
+            const patched = content.replace(/var __dirname = "[^"]*node_modules[^"]*";/g, 'var __dirname = "";')
+
+            if (patched !== content) {
+                await Bun.write(output.path, patched)
+            }
+        }
 
         console.log('Built')
     } catch (error) {
