@@ -59,7 +59,7 @@ print(result.fileUrl) -- URL to access the file after it's uploaded
 > This requires LB Tablet v1.6.0 or higher.
 
 1. [Install](#installation) & [configure](#configuration) LB Presigned as described above
-2. Set `Config.UploadMethod.Video` to `LBPresigned`
+2. Set all `Config.UploadMethod` to `LBPresigned`
 3. Restart your server, or run `ensure lb-tablet` in your server console
 
 ### LB Phone
@@ -68,5 +68,5 @@ print(result.fileUrl) -- URL to access the file after it's uploaded
 > This requires LB Phone v1.5.5 or higher.
 
 1. [Install](#installation) & [configure](#configuration) LB Presigned as described above
-2. Set `Config.UploadMethod.Video` to `LBPresigned`
+2. Set all `Config.UploadMethod` to `LBPresigned`
 3. Restart your server, or run `ensure lb-phone` in your server console
