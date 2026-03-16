@@ -1,0 +1,19 @@
+{
+    "name": "lb-presigned",
+    "module": "src/index.ts",
+    "type": "module",
+    "private": true,
+    "devDependencies": {
+        "@citizenfx/server": "latest",
+        "@types/bun": "latest",
+        "chokidar": "^5"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3",
+        "@aws-sdk/s3-request-presigner": "^3",
+        "mime": "^4.1.0"
+    }
+}
