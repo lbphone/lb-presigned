@@ -37,7 +37,8 @@ You can get your tokens at https://aws.amazon.com/s3/
 1. Download the latest release from the [releases page](https://github.com/lbphone/lb-presigned/releases/latest/download/lb-presigned.zip)
 2. Add the script to your `resources` folder
 3. Add `start lb-presigned` to your `server.cfg`
-4. Start your server, or run `refresh` and `ensure lb-presigned` in your server console
+4. [Configure](#configuration) your credentials as described above
+5. Start your server, or run `refresh` and `ensure lb-presigned` in your server console
 
 ## Usage
 
@@ -60,3 +61,12 @@ print(result.fileUrl) -- URL to access the file after it's uploaded
 1. [Install](#installation) & [configure](#configuration) LB Presigned as described above
 2. Set `Config.UploadMethod.Video` to `LBPresigned`
 3. Restart your server, or run `ensure lb-tablet` in your server console
+
+### LB Phone
+
+> [!IMPORTANT]
+> This requires LB Phone v1.5.5 or higher.
+
+1. [Install](#installation) & [configure](#configuration) LB Presigned as described above
+2. Set `Config.UploadMethod.Video` to `LBPresigned`
+3. Restart your server, or run `ensure lb-phone` in your server console
