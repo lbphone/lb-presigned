@@ -8,6 +8,7 @@ const awsPath = path.join(GetResourcePath(GetCurrentResourceName()), '.aws')
 process.env.AWS_SDK_LOAD_CONFIG = '0'
 process.env.AWS_CONFIG_FILE = awsPath
 process.env.AWS_SHARED_CREDENTIALS_FILE = awsPath
+process.env.AWS_SDK_JS_TYPESCRIPT_DETECTION_DISABLED = 'true'
 
 function normalizeUrl(raw: string): string {
     let url = raw.startsWith('http') ? raw : `https://${raw}`
