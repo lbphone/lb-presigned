@@ -65,7 +65,7 @@ print(result.fileUrl) -- URL to access the file after it's uploaded
 ### LB Phone
 
 > [!IMPORTANT]
-> This requires LB Phone v1.5.5 or higher.
+> This requires LB Phone v2.5.5 or higher.
 
 1. [Install](#installation) & [configure](#configuration) LB Presigned as described above
 2. Set all `Config.UploadMethod` to `LBPresigned`
