@@ -3,6 +3,7 @@ import { watch } from 'chokidar'
 import { sep } from 'path'
 import { Glob } from 'bun'
 import { rm } from 'node:fs/promises'
+import path from 'node:path'
 
 const { values } = parseArgs({
     args: Bun.argv,
@@ -22,16 +23,18 @@ async function build() {
 
     const entrypoints: string[] = []
 
-    for await (const file of glob.scan('.')) {
+    for await (const file of glob.scan({ cwd: import.meta.dir, absolute: true })) {
         entrypoints.push(file)
     }
 
-    await rm('../server', { recursive: true, force: true })
+    const serverPath = path.join(import.meta.dir, '../server')
+
+    await rm(serverPath, { recursive: true, force: true })
 
     try {
         const result = await Bun.build({
             entrypoints: entrypoints,
-            outdir: '../server',
+            outdir: serverPath,
             format: 'cjs',
             target: 'node',
             minify: { whitespace: true, syntax: true }
@@ -56,7 +59,7 @@ async function build() {
 await build()
 
 if (values.watch) {
-    watch('./src', {
+    watch(path.join(import.meta.dir, 'src'), {
         ignored: [
             (filePath: string) => {
                 const basename = filePath.split(sep).pop()

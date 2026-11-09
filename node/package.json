@@ -9,7 +9,7 @@
         "chokidar": "^5"
     },
     "peerDependencies": {
-        "typescript": "^5"
+        "typescript": "^7.0.2"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3",
