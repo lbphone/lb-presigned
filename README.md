@@ -44,13 +44,37 @@ You can get your tokens at https://aws.amazon.com/s3/
 
 ### Exports
 
-`GeneratePresignedUrl(mimeType: string): { presignedUrl: string, fileUrl: string }`
+`GeneratePresignedUrl(mimeType: string, options?: { filename?: string }): { presignedUrl: string, fileUrl: string }`
 
 ```lua
 local result = exports["lb-presigned"]:GeneratePresignedUrl("image/webp")
 
 print(result.presignedUrl) -- URL to upload the file
 print(result.fileUrl) -- URL to access the file after it's uploaded
+```
+
+If you don't pass `filename`, a random name will be generated. Filename is a name without a file extension. It can include folders, and may only contain letters, digits, `_`, `-` and `/`. A file that already has that name will be replaced.
+
+```lua
+local result = exports["lb-presigned"]:GeneratePresignedUrl("image/webp", { filename = "outfits/abc123" })
+
+print(result.fileUrl)
+```
+
+`CanDeleteFile(url: string): boolean`
+
+Checks if `url` points to the configured bucket and has a name that `GeneratePresignedUrl` can give. Note that this does not mean that the file exists.
+
+`DeleteFile(url: string): boolean`
+
+Deletes a file in the configured bucket. Returns `true` when the file was deleted or didn't exist, and false when `CanDeleteFile` is false for the URL or deleting failed. Note that the access key needs permission to delete objects (`s3:DeleteObject` on S3, an "Object Read & Write" token on R2).
+
+```lua
+local url = result.fileUrl
+
+if exports["lb-presigned"]:CanDeleteFile(url) then
+    exports["lb-presigned"]:DeleteFile(url)
+end
 ```
 
 ### LB Tablet

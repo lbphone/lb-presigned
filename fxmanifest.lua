@@ -9,4 +9,4 @@ description "A script to generate presigned URLs for uploading files to S3."
 
 server_script "server/index.js"
 
-version "1.0.0"
+version "1.1.0"

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import path from 'path'
 import mime from 'mime'
@@ -60,7 +60,11 @@ const client = new S3Client({
     }
 })
 
-exports('GeneratePresignedUrl', async (mimeType: string) => {
+type PresignedUrlOptions = {
+    filename?: string
+}
+
+exports('GeneratePresignedUrl', async (mimeType: string, options?: PresignedUrlOptions) => {
     if (!mimeType || typeof mimeType !== 'string') {
         throw new Error('LB Presigned: Invalid mime type')
     }
@@ -71,7 +75,13 @@ exports('GeneratePresignedUrl', async (mimeType: string) => {
         throw new Error(`LB Presigned: Invalid mime type: ${mimeType}`)
     }
 
-    const fileName = `${crypto.randomUUID()}.${extension}`
+    const name = options?.filename ?? crypto.randomUUID()
+
+    if (typeof name !== 'string' || !/^[\w-]+(\/[\w-]+)*$/.test(name)) {
+        throw new Error(`LB Presigned: Invalid file name: ${name}`)
+    }
+
+    const fileName = `${name}.${extension}`
 
     const url = await getSignedUrl(
         client,
@@ -87,4 +97,34 @@ exports('GeneratePresignedUrl', async (mimeType: string) => {
         presignedUrl: url,
         fileUrl: `${domain}/${fileName}`
     }
+})
+
+function getFileKey(url: unknown) {
+    if (typeof url !== 'string' || !url.startsWith(`${domain}/`)) return null
+
+    const key = url.slice(domain.length + 1)
+
+    return /^[\w-]+(\/[\w-]+)*\.[a-z0-9]+$/.test(key) ? key : null
+}
+
+exports('CanDeleteFile', (url: string) => getFileKey(url) !== null)
+
+exports('DeleteFile', async (url: string) => {
+    const key = getFileKey(url)
+
+    if (!key) return false
+
+    try {
+        await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }))
+
+        return true
+    } catch (error) {
+        console.error(`LB Presigned: Failed to delete ${key}:`, error)
+
+        return false
+    }
+})
+
+exports('GetDomain', () => {
+    return domain.replace(/https?:\/\//, '')
 })
